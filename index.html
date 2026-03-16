@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AB Workforce Intelligence — Multi-Queue Allocation Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ═══════════════════════════════════════════════════════
+   AB WORKFORCE INTELLIGENCE — v6
+   TRULY RESPONSIVE — Works at 100% zoom on any laptop
+   Single-page scroll · Full-width inputs · Clean layout
+═══════════════════════════════════════════════════════ */
+
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #f1f5fb;
+  --card:        #ffffff;
+  --border:      #e8edf5;
+  --input-bg:    #f8fafc;
+  --input-bd:    #dde3ee;
+  --hdr:         #ffffff;
+
+  --tx1: #0f172a;
+  --tx2: #475569;
+  --tx3: #94a3b8;
+
+  --blue:    #3b82f6;  --blue-bg:   #eff6ff;
+  --purple:  #8b5cf6;  --purple-bg: #f5f3ff;
+  --orange:  #f97316;  --orange-bg: #fff7ed;
+  --green:   #10b981;  --green-bg:  #ecfdf5;
+  --amber:   #f59e0b;  --amber-bg:  #fffbeb;
+  --indigo:  #6366f1;  --indigo-bg: #eef2ff;
+  --red:     #ef4444;  --red-bg:    #fef2f2;
+  --cyan:    #06b6d4;
+
+  --phones-c: #3b82f6;
+  --verify-c: #8b5cf6;
+  --cops-c:   #f97316;
+
+  --gp: linear-gradient(135deg,#3b82f6,#06b6d4);
+  --gv: linear-gradient(135deg,#8b5cf6,#a78bfa);
+  --gc: linear-gradient(135deg,#f97316,#fb923c);
+  --gb: linear-gradient(135deg,#3b82f6,#1d4ed8);
+  --gg: linear-gradient(135deg,#10b981,#059669);
+  --gpurp: linear-gradient(135deg,#8b5cf6,#6d28d9);
+  --gamb: linear-gradient(135deg,#f59e0b,#d97706);
+  --gi: linear-gradient(135deg,#6366f1,#4f46e5);
+
+  --r3: 3px; --r6: 6px; --r8: 8px; --r12: 12px; --r16: 16px;
+
+  --s1: 0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --s2: 0 4px 16px rgba(0,0,0,0.07),0 1px 4px rgba(0,0,0,0.04);
+  --s3: 0 8px 32px rgba(0,0,0,0.09),0 2px 8px rgba(0,0,0,0.04);
+
+  --ff: 'Plus Jakarta Sans', sans-serif;
+  --fm: 'JetBrains Mono', monospace;
+  --ease: 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--ff);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tx1);
+  background: var(--bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: var(--fm); }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── HEADER ─────────────────────────────────────────── */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--hdr);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--s1);
+}
+.header-inner {
+  max-width: 1400px; margin: 0 auto;
+  padding: 0 1.25rem; height: 56px;
+  display: flex; align-items: center; gap: 1rem;
+}
+.logo-block { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.logo-mark {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: var(--gb);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 3px 10px rgba(59,130,246,0.3);
+}
+.logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+.logo-title { font-weight: 700; font-size: 14px; color: var(--tx1); letter-spacing: -0.01em; }
+.logo-sub   { font-size: 10.5px; color: var(--tx3); }
+.header-center { flex: 1; display: flex; justify-content: center; }
+.datetime-widget {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--input-bg); border: 1px solid var(--border);
+  border-radius: 20px; padding: 4px 14px;
+  font-family: var(--fm); font-size: 12px;
+}
+.dt-day { font-weight: 600; color: var(--tx2); }
+.dt-date { color: var(--tx3); }
+.dt-time { color: var(--blue); font-weight: 600; }
+.dt-sep  { color: var(--tx3); }
+.header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.crm-toggle-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: white; border: 1.5px solid var(--border);
+  border-radius: var(--r8); padding: 6px 14px;
+  font-family: var(--ff); font-size: 12.5px; font-weight: 600;
+  color: var(--tx2); cursor: pointer; transition: all var(--ease);
+  box-shadow: var(--s1);
+}
+.crm-toggle-btn:hover  { border-color: var(--blue); color: var(--blue); }
+.crm-toggle-btn.active { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+.crm-btn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tx3); flex-shrink: 0; transition: background var(--ease); }
+.crm-toggle-btn.active .crm-btn-dot { background: var(--blue); box-shadow: 0 0 5px var(--blue); }
+.live-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--green-bg); border: 1.5px solid rgba(16,185,129,0.3);
+  border-radius: 20px; padding: 4px 12px;
+  font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: 0.05em;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.45} }
+
+/* CRM Banner */
+.crm-banner {
+  background: linear-gradient(90deg,#4f46e5,#7c3aed); color: white;
+  text-align: center; padding: 7px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.crm-banner-pulse { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.8); animation: blink 1.5s infinite; }
+.crm-banner-extra { font-weight: 400; font-size: 11px; opacity: 0.85; }
+
+/* ─── KPI ROW ─────────────────────────────────────────── */
+.kpi-row {
+  max-width: 1400px; margin: 1.25rem auto 0; padding: 0 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.875rem;
+}
+.kpi-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r12); padding: 1rem;
+  display: flex; align-items: center; gap: 0.875rem;
+  box-shadow: var(--s1);
+  position: relative; overflow: hidden;
+  transition: transform var(--ease), box-shadow var(--ease);
+}
+.kpi-card:hover { transform: translateY(-2px); box-shadow: var(--s2); }
+.kpi-card::before {
+  content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 3px; border-radius: 0 2px 2px 0; opacity: 0.5;
+}
+#hero-capacity::before  { background: var(--blue); }
+#hero-agents::before    { background: var(--purple); }
+#hero-pressure::before  { background: var(--amber); }
+#hero-backlog::before   { background: var(--green); }
+#hero-optimizer::before { background: var(--indigo); }
+.kpi-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.blue-kpi   { background: var(--gb); }
+.purple-kpi { background: var(--gpurp); }
+.amber-kpi  { background: var(--gamb); }
+.green-kpi  { background: var(--gg); }
+.indigo-kpi { background: var(--gi); }
+.kpi-body { flex: 1; min-width: 0; }
+.kpi-value { font-family: var(--fm); font-size: 22px; font-weight: 600; color: var(--tx1); line-height: 1.1; letter-spacing: -0.02em; }
+.kpi-label { font-size: 10.5px; color: var(--tx3); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.kpi-spark { width: 34px; height: 20px; border-radius: 3px; opacity: 0.12; flex-shrink: 0; }
+.blue-spark   { background: var(--blue); }
+.purple-spark { background: var(--purple); }
+.amber-spark  { background: var(--amber); }
+.green-spark  { background: var(--green); }
+.indigo-spark { background: var(--indigo); }
+
+/* ─── PAGE WRAPPER ───────────────────────────────────── */
+.page-wrap {
+  max-width: 1400px; margin: 1.25rem auto 0; padding: 0 1.25rem 2rem;
+}
+
+/* ─── QUICK ACTIONS ──────────────────────────────────── */
+.quick-actions { display: flex; gap: 0.625rem; margin-bottom: 1rem; }
+.qa-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0.6rem 1.25rem; border-radius: var(--r8);
+  font-family: var(--ff); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all var(--ease); border: 1.5px solid transparent;
+}
+.qa-btn-load  { background: var(--blue-bg); color: var(--blue); border-color: rgba(59,130,246,0.3); }
+.qa-btn-load:hover  { background: var(--blue); color: white; box-shadow: 0 3px 12px rgba(59,130,246,0.3); }
+.qa-btn-reset { background: white; color: var(--tx2); border-color: var(--border); }
+.qa-btn-reset:hover { background: var(--bg); border-color: var(--tx3); }
+
+/* ─── INPUT PANEL (top, full width) ─────────────────── */
+.input-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r16);
+  padding: 1.5rem;
+  box-shadow: var(--s2);
+  margin-bottom: 1.25rem;
+}
+.input-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1.5rem;
+}
+.input-section { display: flex; flex-direction: column; gap: 0; }
+.input-section-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--tx3);
+  margin-bottom: 0.875rem; padding-bottom: 0.625rem;
+  border-bottom: 2px solid var(--border);
+}
+.ist-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ist-blue   { background: var(--blue); }
+.ist-purple { background: var(--purple); }
+.ist-orange { background: var(--orange); }
+.ist-green  { background: var(--green); }
+
+/* Inside input-section: fields stacked */
+.ifield {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-bottom: 0.625rem;
+}
+.ifield:last-child { margin-bottom: 0; }
+.ifield label {
+  font-size: 12px; font-weight: 600; color: var(--tx2);
+  display: flex; align-items: center; gap: 4px;
+}
+.ifield input[type="number"],
+.ifield input[type="time"] {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  background: var(--input-bg);
+  border: 1.5px solid var(--input-bd);
+  border-radius: var(--r6);
+  font-family: var(--fm);
+  font-size: 15px; font-weight: 500;
+  color: var(--tx1);
+  transition: all var(--ease);
+  -moz-appearance: textfield;
+}
+.ifield input:hover  { border-color: #93c5fd; background: white; }
+.ifield input:focus  { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+.ifield input::-webkit-inner-spin-button,
+.ifield input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.ifield.highlight input { background: var(--blue-bg); border-color: rgba(59,130,246,0.4); font-size: 16px; font-weight: 600; }
+.ifield.highlight label { color: var(--blue); font-weight: 700; }
+
+/* capacity result inside input panel */
+.cap-result {
+  margin-top: 0.875rem; padding: 0.625rem 0.875rem;
+  background: var(--blue-bg); border: 1px solid rgba(59,130,246,0.2);
+  border-radius: var(--r6);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cap-lbl { font-size: 11.5px; font-weight: 600; color: var(--tx2); text-transform: uppercase; letter-spacing: 0.05em; }
+.cap-val { font-family: var(--fm); font-size: 20px; font-weight: 700; color: var(--blue); }
+
+/* Queue mini-header inside input section */
+.q-input-block { margin-top: 0.5rem; }
+.q-input-block:first-of-type { margin-top: 0; }
+.q-block-head {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 0.5rem;
+}
+.q-block-name {
+  font-size: 12.5px; font-weight: 700; color: var(--tx1);
+  outline: none; border-bottom: 1.5px dashed transparent;
+  transition: border-color var(--ease);
+}
+.q-block-name:hover { border-bottom-color: rgba(0,0,0,0.2); }
+.q-block-name:focus { border-bottom-color: var(--blue); color: var(--blue); }
+
+/* Allocation warning */
+.alloc-warn {
+  margin-top: 0.625rem; padding: 0.5rem 0.75rem;
+  background: var(--amber-bg); border: 1px solid rgba(245,158,11,0.3);
+  border-radius: var(--r6); font-size: 12.5px; color: #92400e;
+  grid-column: 1 / -1;
+}
+
+/* Queue metric display (service rate / workload) */
+.q-metrics-row {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--bg); border-radius: var(--r3);
+  padding: 0.375rem 0.625rem; margin-bottom: 0.5rem;
+}
+.q-metric { display: flex; flex-direction: column; gap: 1px; }
+.qm-val { font-family: var(--fm); font-size: 15px; font-weight: 600; color: var(--tx1); line-height: 1; }
+.qm-lbl { font-size: 9px; color: var(--tx3); text-transform: uppercase; letter-spacing: 0.04em; }
+.qm-divider { width: 1px; height: 24px; background: var(--border); }
+
+/* ─── MAIN GRID (outputs) ────────────────────────────── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* ─── CARD BASE ──────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r12);
+  padding: 1.125rem 1.25rem;
+  box-shadow: var(--s2);
+  transition: box-shadow var(--ease);
+}
+.card:hover { box-shadow: var(--s3); }
+
+/* Override old sticky col-left/col-right inside main-grid */
+.col-left, .col-right {
+  display: contents; /* let children fall into main-grid directly */
+}
+
+.card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 1rem; padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+.card-head h3 { font-size: 13px; font-weight: 700; color: var(--tx1); flex: 1; letter-spacing: -0.01em; }
+.ch-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+.ch-icon {
+  width: 26px; height: 26px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0;
+}
+.ci-blue   { background: var(--blue-bg);   color: var(--blue); }
+.ci-purple { background: var(--purple-bg); color: var(--purple); }
+.ci-green  { background: var(--green-bg);  color: var(--green); }
+.ci-amber  { background: var(--amber-bg);  color: var(--amber); }
+.ci-orange { background: var(--orange-bg); color: var(--orange); }
+.ci-indigo { background: var(--indigo-bg); color: var(--indigo); }
+.badge-num { font-family: var(--fm); font-size: 10px; font-weight: 600; background: #f1f5f9; color: var(--tx3); border-radius: 4px; padding: 2px 6px; }
+
+/* ─── TOOLTIP ────────────────────────────────────────── */
+.info-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #f1f5f9; border: 1px solid #e2e8f0;
+  color: var(--tx3); font-size: 9px; font-weight: 700;
+  cursor: help; flex-shrink: 0; font-style: normal;
+  transition: all var(--ease); font-family: var(--fm);
+}
+.info-icon:hover { background: var(--blue); color: white; border-color: var(--blue); }
+.tooltip-box {
+  position: fixed; z-index: 9999; background: #0f172a; color: #e2e8f0;
+  font-size: 12px; line-height: 1.55; padding: 9px 13px; border-radius: 8px;
+  max-width: 270px; pointer-events: none; box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  display: none;
+}
+
+/* ─── PILLS ──────────────────────────────────────────── */
+.q-pill { display: inline-flex; align-items: center; justify-content: center; height: 20px; padding: 0 7px; border-radius: 5px; font-family: var(--fm); font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.q-pill.sm { height: 17px; padding: 0 6px; font-size: 9.5px; }
+.q1p { background: rgba(59,130,246,0.12); color: var(--blue); }
+.q2p { background: rgba(139,92,246,0.12); color: var(--purple); }
+.q3p { background: rgba(249,115,22,0.12);  color: var(--orange); }
+
+/* ─── STABILITY ──────────────────────────────────────── */
+.stab-list { display: flex; flex-direction: column; gap: 1rem; }
+.stab-row  { display: flex; flex-direction: column; gap: 5px; }
+.stab-left { display: flex; align-items: center; gap: 7px; }
+.stab-name { font-size: 13px; font-weight: 600; color: var(--tx1); }
+.stab-nums { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.sn { display: flex; align-items: center; gap: 3px; font-family: var(--fm); font-size: 12px; }
+.sn-lbl { font-size: 9px; text-transform: uppercase; opacity: 0.6; font-family: var(--ff); }
+.sn-sep { color: var(--tx3); }
+.blue-sn   { color: var(--blue); }
+.purple-sn { color: var(--purple); }
+.orange-sn { color: var(--orange); }
+.muted-sn  { color: var(--tx3); }
+.stab-gauge { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+.sg-fill { height: 100%; border-radius: 4px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
+.phones-sg { background: var(--gp); }
+.verify-sg { background: var(--gv); }
+.cops-sg   { background: var(--gc); }
+
+/* ─── PRESSURE ───────────────────────────────────────── */
+.pres-list { display: flex; flex-direction: column; gap: 0.875rem; }
+.pres-row  { display: grid; grid-template-columns: 90px 1fr 50px 66px; align-items: center; gap: 8px; }
+.pr-lbl   { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--tx2); }
+.pr-track { height: 9px; background: #f1f5f9; border-radius: 5px; overflow: hidden; }
+.pr-fill, .pr-bar { height: 100%; border-radius: 5px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.3s; }
+.pr-num { font-family: var(--fm); font-size: 13px; font-weight: 600; color: var(--tx1); text-align: right; }
+.pr-tag { font-size: 10px; font-weight: 700; text-align: center; padding: 2px 6px; border-radius: 20px; font-family: var(--fm); }
+.tag-green  { background: rgba(16,185,129,0.1);  color: var(--green);  border: 1px solid rgba(16,185,129,0.2); }
+.tag-yellow { background: rgba(245,158,11,0.1);  color: var(--amber);  border: 1px solid rgba(245,158,11,0.2); }
+.tag-red    { background: rgba(239,68,68,0.1);   color: var(--red);    border: 1px solid rgba(239,68,68,0.2); }
+
+/* ─── WATERFALL ──────────────────────────────────────── */
+.wf-list { display: flex; flex-direction: column; gap: 4px; }
+.wf-row  { display: grid; grid-template-columns: 100px 1fr 58px; align-items: center; gap: 8px; }
+.wf-label { font-size: 11.5px; color: var(--tx2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wf-bar-track { height: 10px; background: #f1f5f9; border-radius: 5px; overflow: hidden; }
+.wf-bar-fill  { height: 100%; border-radius: 5px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+.wf-total  { background: linear-gradient(90deg,var(--indigo),var(--blue)); }
+.wf-phones { background: var(--gp); }
+.wf-verify { background: var(--gv); }
+.wf-cops   { background: var(--gc); }
+.wf-val { font-family: var(--fm); font-size: 11px; color: var(--tx3); text-align: right; }
+.wf-arrow-row { font-size: 11px; color: #cbd5e1; padding: 1px 0; margin-left: 50px; line-height: 1; }
+.burst-badge-sm { font-family: var(--fm); font-size: 9px; font-weight: 700; color: var(--orange); background: var(--orange-bg); border: 1px solid rgba(249,115,22,0.25); border-radius: 3px; padding: 2px 7px; margin-left: auto; }
+
+/* ─── BACKLOG ─────────────────────────────────────────── */
+.bl-forecast-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.bl-fc-card { border-radius: 6px; padding: 0.875rem; border: 1.5px solid transparent; }
+.verify-fc { background: linear-gradient(135deg,#f5f3ff,#faf5ff); border-color: rgba(139,92,246,0.2); }
+.cops-fc   { background: linear-gradient(135deg,#fff7ed,#fffbeb); border-color: rgba(249,115,22,0.2); }
+.bl-fc-top { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--tx2); margin-bottom: 0.5rem; }
+.bl-fc-row { display: flex; gap: 1.5rem; }
+.bl-fc-stat { display: flex; flex-direction: column; gap: 2px; }
+.bl-fc-val { font-family: var(--fm); font-size: 18px; font-weight: 600; color: var(--tx1); }
+.bl-fc-val.positive { color: var(--green); }
+.bl-fc-val.negative { color: var(--red); }
+.bl-fc-lbl { font-size: 10px; color: var(--tx3); text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* ─── SLIDERS ─────────────────────────────────────────── */
+.sliders-area { display: flex; flex-direction: column; gap: 1.125rem; }
+.sl-group { display: flex; flex-direction: column; gap: 6px; }
+.sl-header { display: flex; align-items: center; justify-content: space-between; }
+.sl-name-row { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--tx2); }
+.sl-val { font-size: 14px; font-weight: 600; color: var(--tx1); font-family: var(--fm); }
+.sl-row  { display: flex; align-items: center; justify-content: space-between; }
+.sl-name { font-size: 13px; color: var(--tx2); }
+.sl-block { display: flex; flex-direction: column; gap: 6px; }
+.sl-marks { display: flex; justify-content: space-between; font-size: 10px; color: var(--tx3); font-family: var(--fm); margin-top: 2px; }
+.spike-box { margin-top: 0.625rem; padding: 0.625rem 0.75rem; background: var(--input-bg); border: 1px solid var(--border); border-radius: 5px; font-size: 12.5px; color: var(--tx2); }
+
+.sl-track { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 3px; outline: none; cursor: pointer; }
+.sl-track::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: white; border: 2px solid currentColor; box-shadow: 0 2px 6px rgba(0,0,0,0.12); cursor: pointer; transition: transform var(--ease); }
+.sl-track::-webkit-slider-thumb:hover { transform: scale(1.18); }
+.sl-blue   { background: linear-gradient(to right, var(--blue)   10%, #e2e8f0 10%); }
+.sl-purple { background: linear-gradient(to right, var(--purple) 30%, #e2e8f0 30%); }
+.sl-orange { background: linear-gradient(to right, var(--orange) 10%, #e2e8f0 10%); }
+.sl-blue::-webkit-slider-thumb   { border-color: var(--blue); }
+.sl-purple::-webkit-slider-thumb { border-color: var(--purple); }
+.sl-orange::-webkit-slider-thumb { border-color: var(--orange); }
+
+/* ─── IMPACT BOX ─────────────────────────────────────── */
+.impact-box { margin-top: 1rem; padding: 0.875rem 1rem; background: var(--input-bg); border-radius: 5px; border: 1px solid var(--border); }
+.impact-title { font-size: 11px; font-weight: 700; color: var(--indigo); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+.aip-line { font-size: 12.5px; color: var(--tx2); margin-bottom: 3px; line-height: 1.5; }
+.aip-line.good { color: var(--green); }
+.aip-line.bad  { color: var(--red); }
+.aip-line.warn { color: var(--amber); }
+
+/* ─── TOGGLE ──────────────────────────────────────────── */
+.tog-wrap { display: inline-flex; align-items: center; cursor: pointer; margin-left: auto; }
+.tog-wrap input { display: none; }
+.tog-track { width: 40px; height: 22px; background: #e2e8f0; border-radius: 11px; position: relative; transition: background var(--ease); }
+.tog-thumb { position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.15); transition: transform var(--ease); }
+.tog-wrap input:checked ~ .tog-track { background: var(--orange); }
+.tog-wrap input:checked ~ .tog-track .tog-thumb { transform: translateX(18px); }
+
+/* ─── ROUTING ─────────────────────────────────────────── */
+.routing-row { display: flex; align-items: center; gap: 7px; padding: 0.5rem 0.75rem; background: var(--bg); border-radius: 5px; }
+.rt-q { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.rt-phones { background: rgba(59,130,246,0.12); color: var(--blue); }
+.rt-verify { background: rgba(139,92,246,0.12); color: var(--purple); }
+.rt-cops   { background: rgba(249,115,22,0.12); color: var(--orange); }
+.rt-arrow  { color: var(--tx3); }
+.burst-note-text { font-size: 11.5px; color: var(--tx3); font-style: italic; margin-top: 0.5rem; }
+.burst-active-strip { margin-top: 0.75rem; padding: 0.5rem 0.875rem; background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.3); border-radius: 5px; font-size: 12px; font-weight: 700; color: var(--orange); display: flex; align-items: center; gap: 7px; }
+.burst-led { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: blink 1.5s infinite; }
+
+/* ─── CONTROL ROOM ───────────────────────────────────── */
+.crm-card { border: 1.5px solid rgba(99,102,241,0.25) !important; background: linear-gradient(135deg,rgba(238,242,255,0.98),rgba(245,243,255,0.98)) !important; position: relative; }
+.crm-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--blue),var(--purple),var(--orange)); border-radius:var(--r12) var(--r12) 0 0; }
+.crm-head { display:flex; align-items:center; gap:10px; margin-bottom:1rem; padding-bottom:0.875rem; border-bottom:1px solid rgba(99,102,241,0.12); }
+.crm-pulse-ring { width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.crm-pulse-dot { width:9px; height:9px; border-radius:50%; background:var(--indigo); animation:crmP 2s ease-in-out infinite; }
+@keyframes crmP { 0%{box-shadow:0 0 0 0 rgba(99,102,241,0.4)} 70%{box-shadow:0 0 0 8px rgba(99,102,241,0)} 100%{box-shadow:0 0 0 0 rgba(99,102,241,0)} }
+.crm-title-text { font-size:14px; font-weight:700; color:var(--indigo); }
+.crm-sub-text   { font-size:11px; color:var(--tx3); margin-top:1px; }
+.crm-status-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.625rem; margin-bottom:0.875rem; }
+.crm-status-item { background:white; border:1.5px solid var(--border); border-radius:var(--r8); padding:0.75rem; text-align:center; transition:all var(--ease); }
+.crm-stable   { border-color:rgba(16,185,129,0.4)!important; background:#ecfdf5!important; }
+.crm-risk     { border-color:rgba(245,158,11,0.4)!important;  background:#fffbeb!important; }
+.crm-critical { border-color:rgba(239,68,68,0.4)!important;   background:#fef2f2!important; }
+.csi-name  { font-size:10.5px; font-weight:700; color:var(--tx3); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px; }
+.csi-led   { font-size:20px; margin-bottom:3px; animation:ledP 2s ease-in-out infinite; }
+@keyframes ledP { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+.csi-label { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:3px; }
+.csi-pres  { font-family:var(--fm); font-size:17px; font-weight:600; }
+.stable-txt { color:var(--green); } .risk-txt { color:var(--amber); } .critical-txt { color:var(--red); }
+.bl-clocks-row { display:grid; grid-template-columns:1fr 1fr; gap:0.625rem; margin-bottom:0.875rem; }
+.bl-clock-card { background:white; border:1.5px solid var(--border); border-radius:var(--r8); padding:0.75rem; }
+.verify-clock { border-left:3px solid var(--purple)!important; }
+.cops-clock   { border-left:3px solid var(--orange)!important; }
+.blc-top    { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--tx3); margin-bottom:4px; }
+.blc-pip    { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.vc-pip     { background:var(--purple); } .cc-pip { background:var(--orange); }
+.blc-big    { font-family:var(--fm); font-size:19px; font-weight:600; color:var(--tx1); margin-bottom:2px; }
+.blc-detail { font-size:11px; color:var(--tx3); }
+.blc-growing  { color:var(--red)!important; } .blc-clearing { color:var(--green)!important; }
+.crm-actions-box { background:white; border:1px solid var(--border); border-radius:var(--r8); padding:0.875rem; }
+.crm-actions-title { font-size:11.5px; font-weight:700; color:var(--tx2); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.625rem; display:flex; align-items:center; gap:5px; }
+.crm-action-item { display:flex; align-items:flex-start; gap:7px; padding:0.5rem 0.625rem; border-radius:5px; margin-bottom:4px; font-size:12.5px; }
+.crm-action-item:last-child { margin-bottom:0; }
+.crm-action-item.rec-stable  { background:rgba(16,185,129,0.07); border:1px solid rgba(16,185,129,0.18); }
+.crm-action-item.rec-warning { background:rgba(245,158,11,0.07);  border:1px solid rgba(245,158,11,0.18); }
+.crm-action-item.rec-action  { background:rgba(239,68,68,0.07);   border:1px solid rgba(239,68,68,0.18); }
+.crm-action-item.rec-info    { background:rgba(59,130,246,0.07);  border:1px solid rgba(59,130,246,0.18); }
+
+/* ─── ADVISOR ─────────────────────────────────────────── */
+.advisor-card { border:1.5px solid rgba(59,130,246,0.2)!important; background:linear-gradient(135deg,rgba(239,246,255,0.98),rgba(245,243,255,0.98))!important; position:relative; }
+.advisor-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--blue),var(--purple),var(--orange),var(--green)); border-radius:var(--r12) var(--r12) 0 0; background-size:300% 100%; animation:shim 4s linear infinite; }
+@keyframes shim { 0%{background-position:0% 0%} 100%{background-position:-300% 0%} }
+.ai-badge-icon { background:var(--gb); color:white; font-size:11px; font-weight:800; width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(59,130,246,0.35); }
+.live-advisor-dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); animation:blink 2s ease-in-out infinite; margin-left:4px; }
+.advisor-recs-grid { display:flex; flex-direction:column; gap:0.5rem; }
+.advisor-rec { display:flex; align-items:flex-start; gap:9px; padding:0.65rem 1rem; border-radius:5px; font-size:13px; border:1px solid transparent; transition:transform 0.15s; }
+.advisor-rec:hover { transform:translateX(3px); }
+.rec-stable  { background:rgba(16,185,129,0.07);  border-color:rgba(16,185,129,0.18); }
+.rec-warning { background:rgba(245,158,11,0.07);  border-color:rgba(245,158,11,0.18); }
+.rec-action  { background:rgba(239,68,68,0.07);   border-color:rgba(239,68,68,0.18); }
+.rec-info    { background:rgba(59,130,246,0.07);  border-color:rgba(59,130,246,0.18); }
+.rec-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+.advisor-placeholder { color:var(--tx3); font-size:13px; font-style:italic; }
+
+/* ─── BOTTOM TOOLS ───────────────────────────────────── */
+.bottom-grid { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
+.tools-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; align-items: start; }
+.run-btn { margin-left:auto; background:white; border:1.5px solid var(--blue); border-radius:5px; color:var(--blue); font-family:var(--ff); font-size:12px; font-weight:700; padding:5px 14px; cursor:pointer; transition:all var(--ease); }
+.run-btn:hover { background:var(--blue); color:white; box-shadow:0 3px 10px rgba(59,130,246,0.3); }
+.run-btn:disabled { background:#f8fafc; color:#94a3b8; border-color:#e2e8f0; cursor:wait; }
+
+/* old field-grid kept for tools section */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.field-grid.two-col   { grid-template-columns: 1fr 1fr; }
+.field-grid.three-col { grid-template-columns: 1fr 1fr 1fr; }
+.field-row { display: flex; flex-direction: column; gap: 4px; }
+.field-row label { font-size: 12px; font-weight: 600; color: var(--tx2); display: flex; align-items: center; gap: 4px; }
+.field-row input[type="number"],
+.field-row input[type="time"] {
+  width: 100%; padding: 0.5rem 0.625rem;
+  background: var(--input-bg); border: 1.5px solid var(--input-bd);
+  border-radius: var(--r6); font-family: var(--fm); font-size: 14px; font-weight: 500;
+  color: var(--tx1); transition: all var(--ease); -moz-appearance: textfield;
+}
+.field-row input:focus { outline:none; border-color:var(--blue); background:white; box-shadow:0 0 0 3px rgba(59,130,246,0.12); }
+.field-row input::-webkit-inner-spin-button,
+.field-row input::-webkit-outer-spin-button { -webkit-appearance:none; }
+
+.opt-output { display:flex; flex-direction:column; gap:4px; }
+.opt-row { display:flex; align-items:center; justify-content:space-between; padding:0.4rem 0.625rem; background:var(--input-bg); border:1px solid var(--border); border-radius:5px; font-size:12.5px; }
+.opt-label { color:var(--tx2); display:flex; align-items:center; gap:5px; }
+.opt-val   { font-family:var(--fm); font-size:14px; font-weight:600; color:var(--tx1); }
+.opt-note  { font-size:10.5px; color:var(--tx3); font-style:italic; margin-top:0.4rem; }
+.monte-output { display:flex; flex-direction:column; gap:4px; }
+.monte-row { display:flex; align-items:center; justify-content:space-between; padding:0.4rem 0.625rem; border-radius:5px; font-size:12.5px; border:1px solid transparent; }
+.monte-label { color:var(--tx2); }
+.monte-prob  { font-family:var(--fm); font-size:14px; font-weight:600; }
+.prob-low    { background:rgba(16,185,129,0.07); border-color:rgba(16,185,129,0.18); color:var(--green); }
+.prob-medium { background:rgba(245,158,11,0.07); border-color:rgba(245,158,11,0.18); color:var(--amber); }
+.prob-high   { background:rgba(239,68,68,0.07);  border-color:rgba(239,68,68,0.18);  color:var(--red); }
+.tl-stats { display:flex; gap:0.625rem; flex-wrap:wrap; margin-top:0.625rem; }
+.tl-stat  { background:var(--input-bg); border:1px solid var(--border); border-radius:5px; padding:0.4rem 0.75rem; }
+.tl-stat-val { font-family:var(--fm); font-size:14px; font-weight:600; color:var(--blue); }
+.tl-stat-lbl { font-size:10px; color:var(--tx3); text-transform:uppercase; letter-spacing:0.04em; }
+
+canvas { display:block; width:100%!important; }
+#monteChart, #timelineChart { background:#f8fafc; border:1px solid #f1f5f9; }
+
+/* ─── INFO BAND + FOOTER ─────────────────────────────── */
+.info-band { background:white; border-top:1px solid var(--border); padding:1.5rem 1.25rem; margin-top:1.5rem; }
+.ib-inner  { max-width:1400px; margin:0 auto; display:flex; gap:3rem; }
+.ib-block  { flex:1; }
+.ib-title  { font-size:13px; font-weight:700; color:var(--tx1); margin-bottom:0.875rem; }
+.ib-divider{ width:1px; background:var(--border); flex-shrink:0; }
+.how-steps { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
+.how-s     { display:flex; align-items:flex-start; gap:7px; font-size:12.5px; color:var(--tx2); }
+.how-n     { font-family:var(--fm); font-size:10px; font-weight:700; color:var(--blue); background:var(--blue-bg); border-radius:3px; width:18px; height:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.how-s strong { color:var(--tx1); }
+.disc-items { display:flex; flex-direction:column; gap:0.4rem; }
+.disc-i    { padding:0.5rem 0.75rem; background:#f8fafc; border:1px solid #f1f5f9; border-radius:5px; font-size:12.5px; color:var(--tx2); }
+.site-footer { background:#0f172a; color:#94a3b8; padding:1.25rem; }
+.footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
+.ft-left   { display:flex; align-items:center; gap:12px; }
+.ft-logo   { width:30px; height:30px; background:var(--gb); border-radius:7px; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:12px; }
+.ft-brand  { font-size:12.5px; font-weight:600; color:#e2e8f0; }
+.ft-tagline{ font-size:11px; color:#475569; margin-top:1px; }
+.ft-right  { font-size:11.5px; font-family:var(--fm); }
+
+/* ─── ANIMATIONS ─────────────────────────────────────── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+.card           { animation:fadeUp 0.3s ease both; }
+.kpi-card       { animation:fadeUp 0.25s ease both; }
+.input-panel    { animation:fadeUp 0.2s ease both; }
+.kpi-row .kpi-card:nth-child(1){animation-delay:0.00s}
+.kpi-row .kpi-card:nth-child(2){animation-delay:0.04s}
+.kpi-row .kpi-card:nth-child(3){animation-delay:0.08s}
+.kpi-row .kpi-card:nth-child(4){animation-delay:0.12s}
+.kpi-row .kpi-card:nth-child(5){animation-delay:0.16s}
+input:focus { outline:none; }
+
+/* dots */
+.dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.blue-dot { background:var(--blue); } .purple-dot { background:var(--purple); }
+.orange-dot { background:var(--orange); } .indigo-dot { background:var(--indigo); }
+.q-ename { font-weight:700; font-size:12.5px; color:var(--tx1); outline:none; min-width:30px; border-bottom:1.5px dashed transparent; transition:border-color var(--ease); }
+.q-ename:hover { border-bottom-color:rgba(0,0,0,0.2); }
+.q-ename:focus { border-bottom-color:var(--blue); color:var(--blue); }
+.edit-hint { font-size:10px; color:var(--tx3); opacity:0.5; }
+.result-strip { margin-top:0.875rem; padding:0.75rem 1rem; border-radius:var(--r6); display:flex; align-items:center; justify-content:space-between; }
+.blue-strip { background:var(--blue-bg); border:1px solid rgba(59,130,246,0.2); }
+.rs-label { font-size:11.5px; font-weight:600; color:var(--tx2); text-transform:uppercase; letter-spacing:0.05em; }
+.rs-value { font-family:var(--fm); font-size:20px; font-weight:700; color:var(--blue); }
+
+/* ─── RESPONSIVE ─────────────────────────────────────── */
+@media (max-width:1200px) {
+  .main-grid { grid-template-columns:1fr 1fr; }
+  .input-panel-grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:900px) {
+  .main-grid { grid-template-columns:1fr; }
+  .input-panel-grid { grid-template-columns:1fr 1fr; }
+  .kpi-row { grid-template-columns:repeat(3,1fr); }
+  .tools-strip { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:680px) {
+  .header-center { display:none; }
+  .kpi-row { grid-template-columns:1fr 1fr; }
+  .input-panel-grid { grid-template-columns:1fr; }
+  .tools-strip { grid-template-columns:1fr; }
+  .crm-status-grid { grid-template-columns:1fr; }
+  .bl-clocks-row { grid-template-columns:1fr; }
+  .how-steps { grid-template-columns:1fr; }
+  .ib-inner { flex-direction:column; }
+  .ib-divider { width:auto; height:1px; }
+  .pres-row { grid-template-columns:80px 1fr 42px 54px; gap:6px; }
+}
+
+/* ══ INTERNAL NAV BAR ══════════════════════════════════ */
+.internal-nav {
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 300;
+}
+.nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 40px;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.nav-link:first-child { border-left: 1px solid rgba(255,255,255,0.06); }
+.nav-link:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
+.nav-link svg { opacity: 0.6; flex-shrink: 0; }
+.nav-link:hover svg { opacity: 1; }
+.nav-active {
+  color: #38bdf8 !important;
+  background: rgba(56,189,248,0.08) !important;
+}
+.nav-active svg { opacity: 1 !important; }
+.site-header { top: 40px !important; }
+  </style>
+</head>
+<body>
+
+<!-- ══ INTERNAL NAV ════════════════════════════════════ -->
+<nav class="internal-nav">
+  <div class="nav-inner">
+    <a href="https://wfm-intelligence-engine.vercel.app" class="nav-link" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Intelligence Engine
+    </a>
+    <a href="https://wfm-intraday-reforecast.vercel.app" class="nav-link" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.7L23 10"/></svg>
+      Intraday Reforecast
+    </a>
+    <a href="https://intraday-variance-analysis.vercel.app" class="nav-link" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Variance Analysis
+    </a>
+    <a href="https://wfm-allocation-simulator.vercel.app" class="nav-link nav-active" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Allocation Simulator
+    </a>
+  </div>
+</nav>
+
+
+<!-- ══ HEADER ══════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <div class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+          <path d="M3 10L10 3L17 10L10 17L3 10Z" fill="white" opacity="0.85"/>
+          <path d="M7 10L10 7L13 10L10 13L7 10Z" fill="white"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">AB Workforce Intelligence</span>
+        <span class="logo-sub">Multi-Queue Allocation Simulator · By Abdul Basit</span>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="datetime-widget">
+        <span class="dt-day" id="dtDay">—</span>
+        <span class="dt-sep">·</span>
+        <span class="dt-date" id="dtDate">—</span>
+        <span class="dt-sep">·</span>
+        <span class="dt-time" id="dtTime">—</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="crm-toggle-btn" id="crmToggleBtn" onclick="toggleControlRoom()">
+        <span class="crm-btn-dot"></span>Control Room
+      </button>
+      <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+    </div>
+  </div>
+</header>
+
+<!-- CRM Banner -->
+<div class="crm-banner" id="crmBanner" style="display:none">
+  <span class="crm-banner-pulse"></span>
+  CONTROL ROOM MODE ACTIVE
+  <span id="burstBannerText" class="crm-banner-extra"></span>
+</div>
+
+<!-- ══ KPI ROW ═════════════════════════════════════════ -->
+<div class="kpi-row">
+  <div class="kpi-card" id="hero-capacity">
+    <div class="kpi-icon blue-kpi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <div class="kpi-body"><div class="kpi-value hs-val">—</div><div class="kpi-label hs-label">Productive Hours</div></div>
+    <div class="kpi-spark blue-spark"></div>
+  </div>
+  <div class="kpi-card" id="hero-agents">
+    <div class="kpi-icon purple-kpi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+    <div class="kpi-body"><div class="kpi-value hs-val">—</div><div class="kpi-label hs-label">Agents Logged In</div></div>
+    <div class="kpi-spark purple-spark"></div>
+  </div>
+  <div class="kpi-card" id="hero-pressure">
+    <div class="kpi-icon amber-kpi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+    <div class="kpi-body"><div class="kpi-value hs-val">—</div><div class="kpi-label hs-label">Avg Queue Pressure</div></div>
+    <div class="kpi-spark amber-spark"></div>
+  </div>
+  <div class="kpi-card" id="hero-backlog">
+    <div class="kpi-icon green-kpi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+    <div class="kpi-body"><div class="kpi-value hs-val">—</div><div class="kpi-label hs-label">Total Backlog</div></div>
+    <div class="kpi-spark green-spark"></div>
+  </div>
+  <div class="kpi-card" id="hero-optimizer">
+    <div class="kpi-icon indigo-kpi"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+    <div class="kpi-body"><div class="kpi-value" id="heroOptLabel">—</div><div class="kpi-label">Optimizer Status</div></div>
+    <div class="kpi-spark indigo-spark"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE WRAPPER ════════════════════════════════════ -->
+<div class="page-wrap">
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <button class="qa-btn qa-btn-load" onclick="loadExampleScenario()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.7"/></svg>
+      Load Example Scenario
+    </button>
+    <button class="qa-btn qa-btn-reset" onclick="resetInputs()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 2 3 8 9 8"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/></svg>
+      Reset Inputs
+    </button>
+  </div>
+
+  <!-- ══ INPUT PANEL (full-width, clearly readable at 100% zoom) ══ -->
+  <div class="input-panel">
+    <div class="input-panel-grid">
+
+      <!-- Column 1: Ops Settings -->
+      <div class="input-section">
+        <div class="input-section-title">
+          <span class="ist-dot ist-blue"></span>Operations Settings
+          <span class="info-icon" data-tip="Productive Capacity = Paid Hours × (1 − Shrinkage) × Occupancy. Shrinkage removes unavailable agent time. Occupancy is your target productive utilization rate.">?</span>
+        </div>
+        <div class="ifield">
+          <label>Paid Hours <span class="info-icon" data-tip="Total scheduled paid hours for the day across all agents.">?</span></label>
+          <input type="number" id="paidHours" value="450" min="1" />
+        </div>
+        <div class="ifield">
+          <label>Shrinkage % <span class="info-icon" data-tip="% of paid time lost to breaks, admin, training.">?</span></label>
+          <input type="number" id="shrinkage" value="15" min="0" max="99" />
+        </div>
+        <div class="ifield">
+          <label>Occupancy % <span class="info-icon" data-tip="Target utilization. Formula: ActiveHandlingTime ÷ ProductiveTime.">?</span></label>
+          <input type="number" id="occupancy" value="95" min="1" max="100" />
+        </div>
+        <div class="ifield">
+          <label>Operating Hours <span class="info-icon" data-tip="Hours the operation runs per day.">?</span></label>
+          <input type="number" id="opHours" value="14" min="1" max="24" />
+        </div>
+        <div class="cap-result">
+          <span class="cap-lbl">Productive Capacity</span>
+          <span class="cap-val mono" id="prodCapacity">— hrs</span>
+        </div>
+      </div>
+
+      <!-- Column 2: Queue Inputs — Phones + Verify -->
+      <div class="input-section">
+        <div class="input-section-title">
+          <span class="ist-dot ist-purple"></span>Queue Inputs — P1 &amp; P2
+        </div>
+
+        <!-- Phones -->
+        <div class="q-block-head">
+          <span class="q-pill q1p">P1</span>
+          <span class="q-block-name editable-name" id="namePhones" contenteditable="true" data-queue="phones">Phones</span>
+          <span class="edit-hint">✏</span>
+        </div>
+        <div class="q-metrics-row">
+          <div class="q-metric"><span class="qm-val" id="phonesServiceRate">—</span><span class="qm-lbl">cases/hr/agt</span></div>
+          <div class="qm-divider"></div>
+          <div class="q-metric"><span class="qm-val" id="phonesWorkload">—</span><span class="qm-lbl">workload hrs</span></div>
+        </div>
+        <div class="ifield">
+          <label>Daily Volume <span class="info-icon" data-tip="Total Phones interactions today.">?</span></label>
+          <input type="number" id="phonesVol" value="500" min="0" />
+        </div>
+        <div class="ifield">
+          <label>AHT (seconds) <span class="info-icon" data-tip="Average Handle Time. ServiceRate = 3600 ÷ AHT.">?</span></label>
+          <input type="number" id="phonesAHT" value="370" min="1" />
+        </div>
+
+        <div style="height:0.875rem"></div>
+
+        <!-- Verify -->
+        <div class="q-block-head">
+          <span class="q-pill q2p">P2</span>
+          <span class="q-block-name editable-name" id="nameVerify" contenteditable="true" data-queue="verify">Verify</span>
+          <span class="edit-hint">✏</span>
+        </div>
+        <div class="q-metrics-row">
+          <div class="q-metric"><span class="qm-val" id="verifyServiceRate">—</span><span class="qm-lbl">cases/hr/agt</span></div>
+          <div class="qm-divider"></div>
+          <div class="q-metric"><span class="qm-val" id="verifyWorkload">—</span><span class="qm-lbl">workload hrs</span></div>
+        </div>
+        <div class="ifield">
+          <label>Daily Volume <span class="info-icon" data-tip="Expected Verify cases today.">?</span></label>
+          <input type="number" id="verifyVol" value="5000" min="0" />
+        </div>
+        <div class="ifield">
+          <label>AHT (seconds) <span class="info-icon" data-tip="Average time per Verify case.">?</span></label>
+          <input type="number" id="verifyAHT" value="160" min="1" />
+        </div>
+        <div class="ifield">
+          <label>Initial Backlog <span class="info-icon" data-tip="Unresolved Verify cases at shift start.">?</span></label>
+          <input type="number" id="verifyBacklog" value="200" min="0" />
+        </div>
+      </div>
+
+      <!-- Column 3: COPS + Staffing -->
+      <div class="input-section">
+        <div class="input-section-title">
+          <span class="ist-dot ist-orange"></span>Queue Inputs — P3
+        </div>
+
+        <!-- COPS -->
+        <div class="q-block-head">
+          <span class="q-pill q3p">P3</span>
+          <span class="q-block-name editable-name" id="nameCOPS" contenteditable="true" data-queue="cops">COPS</span>
+          <span class="edit-hint">✏</span>
+        </div>
+        <div class="q-metrics-row">
+          <div class="q-metric"><span class="qm-val" id="copsServiceRate">—</span><span class="qm-lbl">cases/hr/agt</span></div>
+          <div class="qm-divider"></div>
+          <div class="q-metric"><span class="qm-val" id="copsWorkload">—</span><span class="qm-lbl">workload hrs</span></div>
+        </div>
+        <div class="ifield">
+          <label>Daily Volume <span class="info-icon" data-tip="New COPS cases arriving today.">?</span></label>
+          <input type="number" id="copsVol" value="3500" min="0" />
+        </div>
+        <div class="ifield">
+          <label>AHT (seconds) <span class="info-icon" data-tip="Average handle time per COPS case.">?</span></label>
+          <input type="number" id="copsAHT" value="100" min="1" />
+        </div>
+        <div class="ifield">
+          <label>Initial Backlog <span class="info-icon" data-tip="COPS cases in backlog at shift start.">?</span></label>
+          <input type="number" id="copsBacklog" value="300" min="0" />
+        </div>
+      </div>
+
+      <!-- Column 4: Staffing Controls -->
+      <div class="input-section">
+        <div class="input-section-title">
+          <span class="ist-dot ist-green"></span>Staffing Controls
+        </div>
+        <div class="ifield highlight">
+          <label>Total Agents <span class="info-icon" data-tip="Total agents available. Sum of all dedicated + blended must not exceed this.">?</span></label>
+          <input type="number" id="totalAgents" value="60" min="1" />
+        </div>
+        <div class="ifield">
+          <label><span class="dot blue-dot"></span>&nbsp;Dedicated Phones <span class="info-icon" data-tip="Agents exclusively handling Phones queue.">?</span></label>
+          <input type="number" id="phonesAgents" value="10" min="0" />
+        </div>
+        <div class="ifield">
+          <label><span class="dot purple-dot"></span>&nbsp;Dedicated Verify <span class="info-icon" data-tip="Agents exclusively assigned to Verify.">?</span></label>
+          <input type="number" id="verifyAgents" value="30" min="0" />
+        </div>
+        <div class="ifield">
+          <label><span class="dot orange-dot"></span>&nbsp;Dedicated COPS <span class="info-icon" data-tip="Agents exclusively assigned to COPS.">?</span></label>
+          <input type="number" id="copsAgents" value="10" min="0" />
+        </div>
+        <div class="ifield">
+          <label><span class="dot indigo-dot"></span>&nbsp;Blended Agents <span class="info-icon" data-tip="Follow priority routing: Phones → Verify → COPS automatically.">?</span></label>
+          <input type="number" id="blendedAgents" value="10" min="0" />
+        </div>
+        <div class="alloc-warn" id="allocWarning" style="display:none"></div>
+      </div>
+
+    </div><!-- /input-panel-grid -->
+  </div><!-- /input-panel -->
+
+  <!-- ══ OUTPUT GRID ══════════════════════════════════ -->
+  <div class="main-grid">
+    <!-- uses display:contents on col-left/col-right so children go into grid -->
+    <div class="col-left">
+
+      <!-- Control Room Panel -->
+      <section class="card crm-card" id="controlRoomPanel" style="display:none">
+        <div class="crm-head">
+          <div class="crm-pulse-ring"><span class="crm-pulse-dot"></span></div>
+          <div>
+            <div class="crm-title-text">Operational Control Panel</div>
+            <div class="crm-sub-text">Real-time queue decision support</div>
+          </div>
+        </div>
+        <div class="crm-status-grid">
+          <div class="crm-status-item" id="crmStatusPhones">
+            <div class="csi-name" id="crmNamePhones">Phones</div>
+            <div class="csi-led" id="crmIndicatorPhones">●</div>
+            <div class="csi-label" id="crmStatusLabelPhones">—</div>
+            <div class="csi-pres" id="crmPressurePhones">—</div>
+          </div>
+          <div class="crm-status-item" id="crmStatusVerify">
+            <div class="csi-name" id="crmNameVerify">Verify</div>
+            <div class="csi-led" id="crmIndicatorVerify">●</div>
+            <div class="csi-label" id="crmStatusLabelVerify">—</div>
+            <div class="csi-pres" id="crmPressureVerify">—</div>
+          </div>
+          <div class="crm-status-item" id="crmStatusCOPS">
+            <div class="csi-name" id="crmNameCOPS">COPS</div>
+            <div class="csi-led" id="crmIndicatorCOPS">●</div>
+            <div class="csi-label" id="crmStatusLabelCOPS">—</div>
+            <div class="csi-pres" id="crmPressureCOPS">—</div>
+          </div>
+        </div>
+        <div class="bl-clocks-row">
+          <div class="bl-clock-card verify-clock">
+            <div class="blc-top"><span class="blc-pip vc-pip"></span><span id="blcLabelVerify">Verify</span></div>
+            <div class="blc-big" id="blcTimeVerify">—</div>
+            <div class="blc-detail" id="blcSubVerify">—</div>
+          </div>
+          <div class="bl-clock-card cops-clock">
+            <div class="blc-top"><span class="blc-pip cc-pip"></span><span id="blcLabelCOPS">COPS</span></div>
+            <div class="blc-big" id="blcTimeCOPS">—</div>
+            <div class="blc-detail" id="blcSubCOPS">—</div>
+          </div>
+        </div>
+        <div class="crm-actions-box">
+          <div class="crm-actions-title">⚡ Recommended Actions</div>
+          <div id="crmActions"></div>
+        </div>
+      </section>
+
+      <!-- Queue Stability Meters -->
+      <section class="card" id="sec-stability">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-blue">〜</span><h3>Queue Stability Meters</h3></div>
+          <span class="info-icon" data-tip="Arrival rate vs service capacity per queue. Green = stable, Yellow = at risk, Red = overloaded.">?</span>
+        </div>
+        <div class="stab-list">
+          <div class="stab-row">
+            <div class="stab-left"><span class="q-pill q1p sm">P1</span><span class="stab-name" id="smNamePhones">Phones</span></div>
+            <div class="stab-nums">
+              <span class="sn blue-sn"><span class="sn-lbl">Arr</span><span id="smArrivalPhones">—</span></span>
+              <span class="sn-sep">/</span>
+              <span class="sn blue-sn"><span class="sn-lbl">Cap</span><span id="smCapPhones">—</span></span>
+              <span class="sn muted-sn"><span class="sn-lbl">Agt</span><span id="smAgentsPhones">—</span></span>
+            </div>
+            <div class="stab-gauge"><div class="sg-fill phones-sg" id="smGaugePhones"></div></div>
+          </div>
+          <div class="stab-row">
+            <div class="stab-left"><span class="q-pill q2p sm">P2</span><span class="stab-name" id="smNameVerify">Verify</span></div>
+            <div class="stab-nums">
+              <span class="sn purple-sn"><span class="sn-lbl">Arr</span><span id="smArrivalVerify">—</span></span>
+              <span class="sn-sep">/</span>
+              <span class="sn purple-sn"><span class="sn-lbl">Cap</span><span id="smCapVerify">—</span></span>
+              <span class="sn muted-sn"><span class="sn-lbl">Agt</span><span id="smAgentsVerify">—</span></span>
+            </div>
+            <div class="stab-gauge"><div class="sg-fill verify-sg" id="smGaugeVerify"></div></div>
+          </div>
+          <div class="stab-row">
+            <div class="stab-left"><span class="q-pill q3p sm">P3</span><span class="stab-name" id="smNameCOPS">COPS</span></div>
+            <div class="stab-nums">
+              <span class="sn orange-sn"><span class="sn-lbl">Arr</span><span id="smArrivalCOPS">—</span></span>
+              <span class="sn-sep">/</span>
+              <span class="sn orange-sn"><span class="sn-lbl">Cap</span><span id="smCapCOPS">—</span></span>
+              <span class="sn muted-sn"><span class="sn-lbl">Agt</span><span id="smAgentsCOPS">—</span></span>
+            </div>
+            <div class="stab-gauge"><div class="sg-fill cops-sg" id="smGaugeCOPS"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Queue Pressure -->
+      <section class="card" id="sec-pressure">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-amber">▲</span><h3>Queue Pressure</h3></div>
+          <span class="info-icon" data-tip="Pressure = ArrivalRate ÷ (Agents × ServiceRate). ≤0.8 Stable · 0.8–1.0 At Risk · >1.0 Growing.">?</span>
+        </div>
+        <div class="pres-list">
+          <div class="pres-row">
+            <div class="pr-lbl"><span class="q-pill q1p sm">P1</span><span id="prNamePhones">Phones</span></div>
+            <div class="pr-track"><div class="pr-fill" id="phonesPressureBar"></div></div>
+            <span class="pr-num mono" id="phonesPressureVal">—</span>
+            <span class="pr-tag" id="phonesPressureStatus">—</span>
+          </div>
+          <div class="pres-row">
+            <div class="pr-lbl"><span class="q-pill q2p sm">P2</span><span id="prNameVerify">Verify</span></div>
+            <div class="pr-track"><div class="pr-fill" id="verifyPressureBar"></div></div>
+            <span class="pr-num mono" id="verifyPressureVal">—</span>
+            <span class="pr-tag" id="verifyPressureStatus">—</span>
+          </div>
+          <div class="pres-row">
+            <div class="pr-lbl"><span class="q-pill q3p sm">P3</span><span id="prNameCOPS">COPS</span></div>
+            <div class="pr-track"><div class="pr-fill" id="copsPressureBar"></div></div>
+            <span class="pr-num mono" id="copsPressureVal">—</span>
+            <span class="pr-tag" id="copsPressureStatus">—</span>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /col-left -->
+
+    <div class="col-right">
+
+      <!-- Capacity Waterfall -->
+      <section class="card" id="sec-waterfall">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-indigo">↓</span><h3>Capacity Waterfall</h3></div>
+          <div class="burst-badge-sm" id="burstBadge" style="display:none">BURST</div>
+          <span class="info-icon" data-tip="How capacity is consumed: P1 first, then P2, then P3 gets remainder.">?</span>
+        </div>
+        <div class="wf-list">
+          <div class="wf-row"><span class="wf-label">Total Capacity</span><div class="wf-bar-track"><div class="wf-bar-fill wf-total" id="wfTotal"></div></div><span class="wf-val mono" id="wfTotalVal">—</span></div>
+          <div class="wf-arrow-row">↓</div>
+          <div class="wf-row"><span class="wf-label" id="wfLabelP1">Phones Used</span><div class="wf-bar-track"><div class="wf-bar-fill wf-phones" id="wfPhones"></div></div><span class="wf-val mono" id="wfPhonesVal">—</span></div>
+          <div class="wf-arrow-row">↓</div>
+          <div class="wf-row"><span class="wf-label" id="wfLabelP2">Verify Used</span><div class="wf-bar-track"><div class="wf-bar-fill wf-verify" id="wfVerify"></div></div><span class="wf-val mono" id="wfVerifyVal">—</span></div>
+          <div class="wf-arrow-row">↓</div>
+          <div class="wf-row"><span class="wf-label" id="wfLabelP3">COPS Remaining</span><div class="wf-bar-track"><div class="wf-bar-fill wf-cops" id="wfCOPS"></div></div><span class="wf-val mono" id="wfCOPSVal">—</span></div>
+        </div>
+      </section>
+
+      <!-- Backlog Forecast -->
+      <section class="card" id="sec-backlog">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-green">📊</span><h3>Backlog Forecast</h3></div>
+          <span class="info-icon" data-tip="BacklogChange = Capacity − IncomingWork per hour. + = burning, − = growing.">?</span>
+        </div>
+        <div class="bl-forecast-list">
+          <div class="bl-fc-card verify-fc">
+            <div class="bl-fc-top"><span class="q-pill q2p sm">P2</span><span id="blNameVerify">Verify</span></div>
+            <div class="bl-fc-row">
+              <div class="bl-fc-stat"><span class="bl-fc-val mono" id="verifyBLChange">—</span><span class="bl-fc-lbl">cases/hr</span></div>
+              <div class="bl-fc-stat"><span class="bl-fc-val mono" id="verifyBLClear">—</span><span class="bl-fc-lbl">hrs to clear</span></div>
+            </div>
+          </div>
+          <div class="bl-fc-card cops-fc">
+            <div class="bl-fc-top"><span class="q-pill q3p sm">P3</span><span id="blNameCOPS">COPS</span></div>
+            <div class="bl-fc-row">
+              <div class="bl-fc-stat"><span class="bl-fc-val mono" id="copsBLChange">—</span><span class="bl-fc-lbl">cases/hr</span></div>
+              <div class="bl-fc-stat"><span class="bl-fc-val mono" id="copsBLClear">—</span><span class="bl-fc-lbl">hrs to clear</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Agent Allocation Sliders -->
+      <section class="card" id="sec-sliders">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-purple">⇆</span><h3>Agent Allocation Sliders</h3></div>
+          <span class="info-icon" data-tip="Drag sliders to simulate staffing splits instantly.">?</span>
+        </div>
+        <div class="sliders-area">
+          <div class="sl-group">
+            <div class="sl-header"><div class="sl-name-row"><span class="q-pill q1p sm">P1</span><span id="slLabelPhones">Phones</span></div><span class="sl-val mono" id="sliderPhonesVal">10</span></div>
+            <input type="range" id="sliderPhones" class="sl-track sl-blue" min="0" max="100" value="10" />
+          </div>
+          <div class="sl-group">
+            <div class="sl-header"><div class="sl-name-row"><span class="q-pill q2p sm">P2</span><span id="slLabelVerify">Verify</span></div><span class="sl-val mono" id="sliderVerifyVal">30</span></div>
+            <input type="range" id="sliderVerify" class="sl-track sl-purple" min="0" max="100" value="30" />
+          </div>
+          <div class="sl-group">
+            <div class="sl-header"><div class="sl-name-row"><span class="q-pill q3p sm">P3</span><span id="slLabelCOPS">COPS</span></div><span class="sl-val mono" id="sliderCOPSVal">10</span></div>
+            <input type="range" id="sliderCOPS" class="sl-track sl-orange" min="0" max="100" value="10" />
+          </div>
+        </div>
+        <div class="impact-box" id="agentImpactPanel">
+          <div class="impact-title">⚡ Movement Impact</div>
+          <div id="agentImpactText"></div>
+        </div>
+      </section>
+
+    </div><!-- /col-right (display:contents) -->
+
+    <!-- Span-full cards that go into the 3rd column -->
+
+    <!-- Phone Spike Simulator -->
+    <section class="card" id="sec-spike">
+      <div class="card-head">
+        <div class="ch-left"><span class="ch-icon ci-amber">⚡</span><h3>Phone Spike Simulator</h3></div>
+        <span class="info-icon" data-tip="Multiply Phones volume to simulate intraday spikes. 1.0=baseline, 2.0=double.">?</span>
+      </div>
+      <div class="sl-block">
+        <div class="sl-row">
+          <span class="sl-name">Volume Multiplier</span>
+          <span class="sl-val mono" id="spikeMultiplierVal">1.0×</span>
+        </div>
+        <input type="range" id="spikeMultiplier" class="sl-track sl-blue" min="10" max="20" value="10" step="1" />
+        <div class="sl-marks"><span>1.0×</span><span>1.5×</span><span>2.0×</span></div>
+      </div>
+      <div class="spike-box" id="spikeImpact"></div>
+    </section>
+
+    <!-- COPS Burst Mode -->
+    <section class="card" id="sec-burst">
+      <div class="card-head">
+        <div class="ch-left"><span class="ch-icon ci-orange">🔀</span><h3>COPS Burst Mode</h3></div>
+        <label class="tog-wrap">
+          <input type="checkbox" id="burstModeToggle" onchange="calculate()" />
+          <span class="tog-track"><span class="tog-thumb"></span></span>
+        </label>
+      </div>
+      <div class="routing-row" id="routingDiagram">
+        <span class="rt-q rt-phones">Phones</span>
+        <span class="rt-arrow">→</span>
+        <span class="rt-q rt-verify">Verify</span>
+        <span class="rt-arrow">→</span>
+        <span class="rt-q rt-cops">COPS</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.625rem;margin-top:0.75rem">
+        <div class="ifield">
+          <label>Burst Start</label>
+          <input type="time" id="burstStart" value="09:00" />
+        </div>
+        <div class="ifield">
+          <label>Duration (hrs)</label>
+          <input type="number" id="burstDuration" value="2" min="1" max="12" />
+        </div>
+      </div>
+      <div class="burst-note-text" id="burstNote"></div>
+      <div class="burst-active-strip" id="burstBadge2" style="display:none">
+        <span class="burst-led"></span>COPS BURST MODE ACTIVE
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="card" id="sec-charts-p">
+      <div class="card-head"><h3>Queue Pressure Overview</h3><span class="info-icon" data-tip="Bar chart — red dashed line at 1.0 is the overload threshold.">?</span></div>
+      <canvas id="pressureChart" height="160"></canvas>
+    </section>
+
+    <section class="card" id="sec-charts-a">
+      <div class="card-head"><h3>Capacity Distribution</h3><span class="info-icon" data-tip="Agent distribution across queues and blended pool.">?</span></div>
+      <canvas id="allocationChart" height="160"></canvas>
+    </section>
+
+  </div><!-- /main-grid -->
+
+  <!-- ══ AI ADVISOR (full width) ══ -->
+  <div class="bottom-grid">
+
+    <section class="card advisor-card" id="sec-advisor">
+      <div class="card-head">
+        <div class="ch-left">
+          <div class="ai-badge-icon">AI</div>
+          <h3>Intraday Advisor</h3>
+          <span class="live-advisor-dot"></span>
+        </div>
+        <span class="info-icon" data-tip="Analyzes arrival rates, service rates, backlog, and allocation to generate staffing recommendations.">?</span>
+      </div>
+      <div class="advisor-recs-grid" id="advisorRecs">
+        <div class="advisor-placeholder">Analyzing queue data…</div>
+      </div>
+    </section>
+
+    <!-- Tools -->
+    <div class="tools-strip">
+      <section class="card" id="sec-optimizer">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-indigo">★</span><h3>Skill Optimizer</h3></div>
+          <button class="run-btn" id="optimizerBtn" onclick="runOptimizer()">Run</button>
+        </div>
+        <div id="optimizerResult" class="opt-output"></div>
+      </section>
+
+      <section class="card" id="sec-monte">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-purple">◎</span><h3>Monte Carlo</h3></div>
+          <button class="run-btn" id="monteBtn" onclick="runMonteCarlo()">Simulate</button>
+        </div>
+        <div class="field-grid two-col" style="margin-bottom:0.75rem">
+          <div class="field-row"><label>Runs <span class="info-icon" data-tip="Number of random scenarios. Default 500.">?</span></label><input type="number" id="mcRuns" value="500" min="100" max="5000" /></div>
+          <div class="field-row"><label>Phones Var% <span class="info-icon" data-tip="±% std dev for Phones volume.">?</span></label><input type="number" id="mcPhonesVar" value="20" min="1" max="50" /></div>
+          <div class="field-row"><label>Verify Var%</label><input type="number" id="mcVerifyVar" value="10" min="1" max="50" /></div>
+        </div>
+        <div id="monteResult" class="monte-output"></div>
+        <canvas id="monteChart" height="90" style="width:100%;display:none;margin-top:0.75rem;border-radius:5px"></canvas>
+      </section>
+
+      <section class="card" id="sec-timeline">
+        <div class="card-head">
+          <div class="ch-left"><span class="ch-icon ci-blue">🕐</span><h3>Intraday Timeline</h3></div>
+          <button class="run-btn" id="timelineBtn" onclick="runTimeline()">Simulate</button>
+        </div>
+        <div class="field-grid two-col" style="margin-bottom:0.75rem">
+          <div class="field-row"><label>Opens</label><input type="time" id="tlOpen" value="07:00" /></div>
+          <div class="field-row"><label>Closes</label><input type="time" id="tlClose" value="21:00" /></div>
+          <div class="field-row"><label>Interval (mins) <span class="info-icon" data-tip="15 mins = WFM standard.">?</span></label><input type="number" id="tlInterval" value="15" min="5" max="60" /></div>
+        </div>
+        <canvas id="timelineChart" height="110" style="width:100%;display:none;border-radius:5px"></canvas>
+        <div id="timelineStats" class="tl-stats"></div>
+      </section>
+    </div>
+
+  </div><!-- /bottom-grid -->
+
+</div><!-- /page-wrap -->
+
+<!-- Info Band -->
+<div class="info-band">
+  <div class="ib-inner">
+    <div class="ib-block">
+      <h4 class="ib-title">How This Simulator Works</h4>
+      <div class="how-steps">
+        <div class="how-s"><span class="how-n">1</span><span><strong>Workloads</strong> — Volumes × AHT ÷ 3600 = handling hours.</span></div>
+        <div class="how-s"><span class="how-n">2</span><span><strong>Service Rates</strong> — 3600 ÷ AHT = cases per hour per agent.</span></div>
+        <div class="how-s"><span class="how-n">3</span><span><strong>Arrival Rates</strong> — Daily volume ÷ operating hours.</span></div>
+        <div class="how-s"><span class="how-n">4</span><span><strong>Priority Routing</strong> — Blended: Phones→Verify→COPS.</span></div>
+        <div class="how-s"><span class="how-n">5</span><span><strong>Backlog Forecast</strong> — Capacity vs arrivals = growth or burn.</span></div>
+        <div class="how-s"><span class="how-n">6</span><span><strong>Monte Carlo</strong> — Random scenarios estimate overload risk.</span></div>
+      </div>
+    </div>
+    <div class="ib-divider"></div>
+    <div class="ib-block">
+      <h4 class="ib-title">Privacy &amp; Data</h4>
+      <div class="disc-items">
+        <div class="disc-i">🔒 Runs entirely in your browser — no data leaves your device</div>
+        <div class="disc-i">🚫 No operational data is saved or persisted</div>
+        <div class="disc-i">📡 No information is transmitted to any server</div>
+        <div class="disc-i">⚡ All calculations run in JavaScript locally</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="ft-left">
+      <div class="ft-logo">AB</div>
+      <div><div class="ft-brand">AB Workforce Intelligence</div><div class="ft-tagline">Built for Workforce Planning &amp; Intraday Decision Support</div></div>
+    </div>
+    <div class="ft-right">© Abdul Basit · All rights reserved</div>
+  </div>
+</footer>
+
+<div class="tooltip-box" id="tooltipOverlay"></div>
+<script src="script.js"></script>
+</body>
+</html>
