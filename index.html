@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AB Workforce Intelligence — Multi-Queue Allocation Simulator</title>
+  <title>Multi-Queue Allocation Tool | Workforce Distribution Optimizer by Abdul Basit</title>
+  <meta name="description" content="Optimize agent allocation across multiple queues. Improve service levels and efficiency in call centers." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -193,6 +194,17 @@ body {
 .page-wrap {
   max-width: 1400px; margin: 1.25rem auto 0; padding: 0 1.25rem 2rem;
 }
+
+.seo-hero { max-width: 1400px; margin: 1rem auto 0; padding: 0 1.25rem; }
+.seo-hero-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r12);
+  box-shadow: var(--s1);
+  padding: 1rem 1.25rem;
+}
+.seo-hero-title { font-size: 14px; font-weight: 700; color: var(--tx1); }
+.seo-hero-sub { font-size: 12px; color: var(--tx2); margin-top: 2px; }
 
 /* ─── QUICK ACTIONS ──────────────────────────────────── */
 .quick-actions { display: flex; gap: 0.625rem; margin-bottom: 1rem; }
@@ -587,6 +599,7 @@ canvas { display:block; width:100%!important; }
 .ib-inner  { max-width:1400px; margin:0 auto; display:flex; gap:3rem; }
 .ib-block  { flex:1; }
 .ib-title  { font-size:13px; font-weight:700; color:var(--tx1); margin-bottom:0.875rem; }
+.ib-subtitle { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--tx3); margin:1rem 0 0.5rem; }
 .ib-divider{ width:1px; background:var(--border); flex-shrink:0; }
 .how-steps { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; }
 .how-s     { display:flex; align-items:flex-start; gap:7px; font-size:12.5px; color:var(--tx2); }
@@ -594,6 +607,8 @@ canvas { display:block; width:100%!important; }
 .how-s strong { color:var(--tx1); }
 .disc-items { display:flex; flex-direction:column; gap:0.4rem; }
 .disc-i    { padding:0.5rem 0.75rem; background:#f8fafc; border:1px solid #f1f5f9; border-radius:5px; font-size:12.5px; color:var(--tx2); }
+.llm-summary, .faq-list { margin-left: 1rem; color: var(--tx2); font-size: 12.5px; line-height: 1.5; }
+.keyword-paragraph { font-size: 12.5px; color: var(--tx2); line-height: 1.5; }
 .site-footer { background:#0f172a; color:#94a3b8; padding:1.25rem; }
 .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
 .ft-left   { display:flex; align-items:center; gap:12px; }
@@ -753,6 +768,13 @@ input:focus { outline:none; }
     </div>
   </div>
 </header>
+
+<section class="seo-hero">
+  <div class="seo-hero-card">
+    <p class="seo-hero-title">Built by Abdul Basit · WFM Lead at Everise</p>
+    <p class="seo-hero-sub">Specializing in Workforce Allocation &amp; Queue Optimization</p>
+  </div>
+</section>
 
 <!-- CRM Banner -->
 <div class="crm-banner" id="crmBanner" style="display:none">
@@ -1283,6 +1305,19 @@ input:focus { outline:none; }
         <div class="how-s"><span class="how-n">5</span><span><strong>Backlog Forecast</strong> — Capacity vs arrivals = growth or burn.</span></div>
         <div class="how-s"><span class="how-n">6</span><span><strong>Monte Carlo</strong> — Random scenarios estimate overload risk.</span></div>
       </div>
+      <h5 class="ib-subtitle">LLM Summary</h5>
+      <ul class="llm-summary">
+        <li>Allocates agents across queues</li>
+        <li>Balances workload</li>
+        <li>Improves efficiency</li>
+      </ul>
+      <h5 class="ib-subtitle">Keyword Focus</h5>
+      <p class="keyword-paragraph">This workforce management tool helps optimize queue allocation, balance workload, and improve service levels.</p>
+      <h5 class="ib-subtitle">FAQ</h5>
+      <ul class="faq-list">
+        <li>How do you allocate agents across queues?</li>
+        <li>What is queue optimization in WFM?</li>
+      </ul>
     </div>
     <div class="ib-divider"></div>
     <div class="ib-block">
@@ -1302,9 +1337,9 @@ input:focus { outline:none; }
   <div class="footer-inner">
     <div class="ft-left">
       <div class="ft-logo">AB</div>
-      <div><div class="ft-brand">AB Workforce Intelligence</div><div class="ft-tagline">Built for Workforce Planning &amp; Intraday Decision Support</div></div>
+      <div><div class="ft-brand">AB Workforce Intelligence</div><div class="ft-tagline">Built by Abdul Basit · Workforce Management Lead at Everise<br/>Focused on Workforce Allocation</div></div>
     </div>
-    <div class="ft-right">© Abdul Basit · All rights reserved</div>
+    <div class="ft-right">© Abdul Basit</div>
   </div>
 </footer>
 
